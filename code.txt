@@ -1,0 +1,75 @@
+-- **Project: Bestseller Book Recommendation System**
+-- **Objective:** Recommend the Top 10 Bestsellers based on Average Rating and Sales
+
+-- Step 1: Create the Books Table
+CREATE TABLE Books (
+    book_id INT PRIMARY KEY,
+    title VARCHAR(255),
+    author VARCHAR(255),
+    genre VARCHAR(50),
+    publication_year INT,
+    average_rating FLOAT,
+    total_sales INT
+);
+
+-- Step 2: Insert Sample Data (Sample rows for demonstration; actual database contains 50000 records)
+INSERT INTO Books (book_id, title, author, genre, publication_year, average_rating, total_sales) VALUES
+(1, 'Book A', 'Author X', 'Fiction', 2020, 4.8, 50000),
+(2, 'Book B', 'Author Y', 'Non-Fiction', 2018, 4.7, 60000),
+(3, 'Book C', 'Author Z', 'Mystery', 2019, 4.5, 45000),
+(4, 'Book D', 'Author X', 'Sci-Fi', 2021, 4.9, 70000),
+(5, 'Book E', 'Author W', 'Fiction', 2017, 4.6, 48000);
+
+-- Step 3: Query to Find Top 10 Bestsellers Based on Rating and Sales
+SELECT 
+    title, 
+    author, 
+    genre, 
+    publication_year, 
+    average_rating, 
+    total_sales
+FROM 
+    Books
+ORDER BY 
+    average_rating DESC, 
+    total_sales DESC
+LIMIT 10;
+
+-- Step 4: Analyze Top Genres by Average Rating
+SELECT 
+    genre, 
+    AVG(average_rating) AS avg_rating
+FROM 
+    Books
+GROUP BY 
+    genre
+ORDER BY 
+    avg_rating DESC;
+
+-- Step 5: Sales Distribution by Genre
+SELECT 
+    genre, 
+    SUM(total_sales) AS total_sales
+FROM 
+    Books
+GROUP BY 
+    genre
+ORDER BY 
+    total_sales DESC;
+
+-- Step 6: Filter Books Published in the Last 5 Years with High Ratings
+SELECT 
+    title, 
+    author, 
+    publication_year, 
+    average_rating
+FROM 
+    Books
+WHERE 
+    publication_year >= YEAR(CURDATE()) - 5
+    AND average_rating >= 4.5
+ORDER BY 
+    average_rating DESC;
+
+-- Step 7: Optimize Query Performance with Indexes
+CREATE INDEX idx_rating_sales ON Books(average_rating, total_sales);
